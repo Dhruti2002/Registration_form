@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <!-- jQuery -->
+    <script src="jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="bootstrap.min.js"></script>
+
+    <style>
+          
+        .container {
+            border: 1px solid #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 60px rgba(3, 202, 247, 0.319); 
+        }
+
+        #charCount {
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color: #ff0000; 
+            margin-top: 5px;
+        }
+
+        #userDataTable {
+            margin-top: 20px;
+            
+        }
+    </style>
+</head>
+<body>
+<div class="bg-image">
+
+<div class="container mt-5 mb-5">
+    <h3 class="mb-3">Registration Form</h3>
+    <form id="registrationForm">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="firstName">First Name:</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" required>
+                <span class="error-message" id="firstNameError"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="middleName">Middle Name:</label>
+                <input type="text" class="form-control" id="middleName" name="middleName" placeholder="Enter middle name">
+                <span class="error-message" id="middleNameError"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="lastName">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name" required>
+                <span class="error-message" id="lastNameError"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+            <span class="error-message" id="usernameError"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your Email" required>
+            <span class="error-message" id="emailError"></span>
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Enter your Phone Number" required>
+            <span class="error-message" id="phoneNumberError"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Create your Password" required>
+            
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            <span class="error-message" id="confirmPasswordError"></span>
+        </div>
+        <div class="form-group">
+            <label for="message">Message (max 50 characters):</label>
+            <input type="text" class="form-control" id="message" name="message" placeholder="Enter your message here" maxlength="50">
+            <small id="charCount">Characters left: 50</small>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="registerUser()">Register</button>
+        <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
+    </form>
+    
+</div>
+<div id="userDataTable" class="container mt-5 mb-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sr No.</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User data rows will be dynamically added here -->
+        </tbody>
+    </table>
+</div>
+</div>
+
+
+<script>
+
+function registerUser() {
+
+    // Get form data
+    var firstName = $("#firstName").val();
+    var middleName = $("#middleName").val();
+    var lastName = $("#lastName").val();
+    var username = $("#username").val();
+    var email = $("#email").val();
+    var phoneNumber = $("#phoneNumber").val();
+    var password = $("#password").val();
+    var confirmPassword = $("#confirmPassword").val();
+    var message = $("#message").val();
+
+    // Check if all required fields are filled
+    if (firstName && lastName && username && email && phoneNumber && password && confirmPassword) {
+        // Create a table row with the form data
+        var tableRow = "<tr>" +
+            "<td></td>" +
+            "<td>" + firstName + "</td>" +
+            "<td>" + middleName + "</td>" +
+            "<td>" + lastName + "</td>" +
+            "<td>" + username + "</td>" +
+            "<td>" + email + "</td>" +
+            "<td>" + phoneNumber + "</td>" +
+            "<td>" + message + "</td>" +
+            "</tr>";
+
+        // Append the table row to the table body
+        $("#userDataTable tbody").append(tableRow);
+
+        updateSerialNumbers();
+
+        resetForm();
+    } else {
+        // Handle the case where not all required fields are filled
+        alert("Please fill in all required fields.");
+    }
+}
+
+
+    function updateSerialNumbers() {
+        $("#userDataTable tbody tr").each(function (index) {
+            $(this).find("td:first").text(index + 1);
+        });
+    }
+
+    function resetForm() {
+        // Clear all input fields and error messages
+        $("#firstName, #middleName, #lastName, #username, #email, #phoneNumber, #password, #confirmPassword, #message").val("");
+        $(".error-message").text("");
+
+        // Reset password match message
+        $("#confirmPasswordError").text("");
+
+        // Reset character count
+        $("#charCount").text("Characters left: 50");
+
+        // Remove the focus from the input fields
+        $(":input").blur();
+    }
+
+    $(document).ready(function () {
+        // Real-time password validation
+        $("#confirmPassword").on("input", function () {
+            var password = $("#password").val();
+            var confirmPassword = $(this).val();
+
+            // Check if the confirmPassword input is empty
+            if (!confirmPassword) {
+                $("#confirmPasswordError").text("");
+            } else {
+                // Password validation
+                if (password !== confirmPassword) {
+                    $("#confirmPasswordError").text("Passwords do not match.");
+                    $("#confirmPasswordError").css("color", "red");
+                } else {
+                    $("#confirmPasswordError").text("Password Matched!");
+                    $("#confirmPasswordError").css("color", "green");
+                }
+            }
+        });
+
+        // Real-time email validation
+        $("#email").on("input", function () {
+            var email = $(this).val();
+            var emailError = $("#emailError");
+
+            // Check if the email input is empty
+            if (!email) {
+                emailError.text("");
+            } else {
+                // Email validation using a simple regex
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(email)) {
+                    emailError.text("Valid Email");
+                    emailError.css("color", "green");
+                } else {
+                    emailError.text("Invalid Email");
+                    emailError.css("color", "red");
+                }
+            }
+        });
+
+
+        // Real-time phone number validation
+        $("#phoneNumber").on("input", function () {
+            var phoneNumber = $(this).val();
+            var phoneNumberError = $("#phoneNumberError");
+
+            // Check if the phone number input is empty
+            if (!phoneNumber) {
+                phoneNumberError.text("");
+            } else {
+                // Phone number validation - allow only numeric input and limit to 10 characters
+                var phoneNumberRegex = /^[0-9]+$/;
+                if (phoneNumberRegex.test(phoneNumber) && phoneNumber.length <= 10) {
+                    phoneNumberError.text("Valid Phone Number");
+                    phoneNumberError.css("color", "green");
+                } else {
+                    phoneNumberError.text("Invalid Phone Number (Only numbers allowed, max 10 characters)");
+                    phoneNumberError.css("color", "red");
+                }
+            }
+        });
+
+        // Real-time username validation
+        $("#username").on("input", function () {
+            var username = $(this).val();
+            var usernameError = $("#usernameError");
+
+            // Check if the username input is empty
+            if (!username) {
+                usernameError.text("");
+            } else {
+                // Username validation
+                var usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/;
+                if (usernameRegex.test(username)) {
+                    usernameError.text("Valid Username");
+                    usernameError.css("color", "green");
+                } else {
+                    usernameError.text("Invalid Username (Length between 6 and 20 characters, alphanumeric and underscore allowed, must start with a letter)");
+                    usernameError.css("color", "red");
+                }
+            }
+        });
+
+        // Real-time first name validation
+        $("#firstName").on("input", function () {
+            var firstName = $(this).val();
+            var firstNameError = $("#firstNameError");
+
+            // Check if the first name input is empty
+            if (!firstName) {
+                firstNameError.text("");
+            } else {
+                // First name validation - allow only characters
+                var nameRegex = /^[A-Za-z]+$/;
+                if (nameRegex.test(firstName)) {
+                    firstNameError.text("Valid First Name");
+                    firstNameError.css("color", "green");
+                } else {
+                    firstNameError.text("Invalid First Name (Only characters allowed)");
+                    firstNameError.css("color", "red");
+                }
+            }
+        });
+
+        // Real-time middle name validation
+        $("#middleName").on("input", function () {
+            var middleName = $(this).val();
+            var middleNameError = $("#middleNameError");
+
+            // Check if the middle name input is empty
+            if (!middleName) {
+                middleNameError.text("");
+            } else {
+                // Middle name validation - allow only characters
+                var nameRegex = /^[A-Za-z]+$/;
+                if (nameRegex.test(middleName)) {
+                    middleNameError.text("Valid Middle Name");
+                    middleNameError.css("color", "green");
+                } else {
+                    middleNameError.text("Invalid Middle Name (Only characters allowed)");
+                    middleNameError.css("color", "red");
+                }
+            }
+        });
+
+        // Real-time last name validation
+        $("#lastName").on("input", function () {
+            var lastName = $(this).val();
+            var lastNameError = $("#lastNameError");
+
+            // Check if the last name input is empty
+            if (!lastName) {
+                lastNameError.text("");
+            } else {
+                // Last name validation - allow only characters
+                var nameRegex = /^[A-Za-z]+$/;
+                if (nameRegex.test(lastName)) {
+                    lastNameError.text("Valid Last Name");
+                    lastNameError.css("color", "green");
+                } else {
+                    lastNameError.text("Invalid Last Name (Only characters allowed)");
+                    lastNameError.css("color", "red");
+                }
+            }
+        });
+
+
+        // Character count validation
+        $("#message").on("input", function () {
+            var maxLength = 50;
+            var currentLength = $(this).val().length;
+            var charactersLeft = maxLength - currentLength;
+
+            // Display character count
+            $("#charCount").text("Characters left: " + charactersLeft);
+
+            // Change color when 0 characters left
+            if (charactersLeft === 0) {
+                $("#charCount").css("color", "red");
+            } else {
+                $("#charCount").css("color", "#888");
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>
